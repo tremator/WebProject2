@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\dmsol\\OneDrive\\Documents\\progra2\\WebProjectll\\WebProjectll.csproj": {}
+    "C:\\Users\\dmsol\\OneDrive\\Documents\\progra2\\api\\WebProjectll\\WebProjectll.csproj": {}
   },
   "projects": {
-    "C:\\Users\\dmsol\\OneDrive\\Documents\\progra2\\WebProjectll\\WebProjectll.csproj": {
+    "C:\\Users\\dmsol\\OneDrive\\Documents\\progra2\\api\\WebProjectll\\WebProjectll.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\dmsol\\OneDrive\\Documents\\progra2\\WebProjectll\\WebProjectll.csproj",
+        "projectUniqueName": "C:\\Users\\dmsol\\OneDrive\\Documents\\progra2\\api\\WebProjectll\\WebProjectll.csproj",
         "projectName": "WebProjectll",
-        "projectPath": "C:\\Users\\dmsol\\OneDrive\\Documents\\progra2\\WebProjectll\\WebProjectll.csproj",
+        "projectPath": "C:\\Users\\dmsol\\OneDrive\\Documents\\progra2\\api\\WebProjectll\\WebProjectll.csproj",
         "packagesPath": "C:\\Users\\dmsol\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\dmsol\\OneDrive\\Documents\\progra2\\WebProjectll\\obj\\",
+        "outputPath": "C:\\Users\\dmsol\\OneDrive\\Documents\\progra2\\api\\WebProjectll\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\dmsol\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -50,7 +50,7 @@
             },
             "GraphQL.Server.Ui.Playground": {
               "target": "Package",
-              "version": "[5.0.1, )"
+              "version": "[4.4.1, )"
             },
             "GraphQl": {
               "target": "Package",
@@ -60,7 +60,7 @@
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[5.0.4, )"
+              "version": "[5.0.2, )"
             },
             "Npgsql": {
               "target": "Package",

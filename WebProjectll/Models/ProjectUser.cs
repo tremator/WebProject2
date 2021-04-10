@@ -2,10 +2,9 @@ namespace WebProjectll.Models
 {
     public class ProjectUser
     {
-        public long Id { get; set; }
-        public long UserId { get; set; }
+        public long Usersid { get; set; }
         public User User { get; set; }
-        public long ProjectId { get; set; }
+        public long Projectsid { get; set; }
         public Project Project { get; set; }
     }
 }

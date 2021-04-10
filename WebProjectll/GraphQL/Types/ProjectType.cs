@@ -14,11 +14,18 @@ namespace WebProjectll.GraphQL.Types
             Field(x => x.Name);
             Field(x => x.Description);
             Field<ListGraphType<UserType>>(
-                "projects",
+                "users",
                 resolve: context => {
                     return repository.getUsers(context.Source.id);
                 }
             );
+            Field<ListGraphType<TimeReportType>>(
+                "reports",
+                resolve: context => {
+                    return repository.getReports(context.Source.id);
+                }
+            );
+
         }
         
     }

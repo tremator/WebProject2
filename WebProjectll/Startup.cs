@@ -14,11 +14,12 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using WebProjectll.Repositories;
 using GraphQL;
-using WebProjectll.GraphQL.Types;
+using WebProjectll.GraphQL;
 using GraphQL.Server;
 using GraphQL.Server.Transports.WebSockets;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using GraphQL.Server.Ui.Playground;
+using System.Text;
 
 namespace WebProjectll
 {
@@ -34,7 +35,7 @@ namespace WebProjectll
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            
+            var key = Encoding.ASCII.GetBytes(Configuration.GetValue<string>("Secretkey"));
             var connectionString = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<DatabaseContext>(
                 options => options.UseNpgsql(connectionString).UseSnakeCaseNamingConvention()
@@ -45,6 +46,9 @@ namespace WebProjectll
             services.AddScoped<ProjectSchema>();
             services.AddScoped<ProjectRepository>();
             services.AddScoped<UserRepository>();
+            services.AddScoped<TimeReportRepository>();
+            services.AddScoped<ProjectUserRepository>();
+            
 
             services.AddGraphQL(options => { options.ExposeExceptions = true; })
                     .AddGraphTypes(ServiceLifetime.Scoped);
@@ -77,7 +81,10 @@ namespace WebProjectll
             app.UseRouting();
 
             app.UseGraphQL<ProjectSchema>();
-            
+            app.UseGraphQLPlayground(new GraphQLPlaygroundOptions{
+                Path = "/ui/playground"
+            });
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

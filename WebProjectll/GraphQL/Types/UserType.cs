@@ -19,6 +19,12 @@ namespace WebProjectll.GraphQL.Types
                     return repository.getProjects(context.Source.id);
                 }
             );
+            Field<ListGraphType<TimeReportType>>(
+                "reports",
+                resolve: context => {
+                    return repository.getReports(context.Source.id);
+                }
+            );
         }
     }
 }

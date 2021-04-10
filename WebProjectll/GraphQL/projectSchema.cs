@@ -2,7 +2,7 @@ using GraphQL;
 using GraphQL.Types;
 
 
-namespace WebProjectll.GraphQL.Types
+namespace WebProjectll.GraphQL
 {
     class ProjectSchema : Schema
     {

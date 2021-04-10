@@ -14,15 +14,15 @@ namespace WebProjectll.Models
                 .UsingEntity<ProjectUser>(
                     pu => pu.HasOne(prop => prop.Project)
                     .WithMany()
-                    .HasForeignKey(prop => prop.ProjectId),
+                    .HasForeignKey(prop => prop.Projectsid),
                     pu => pu.HasOne(prop => prop.User)
                     .WithMany()
-                    .HasForeignKey(prop => prop.UserId)
+                    .HasForeignKey(prop => prop.Usersid)
                 );
         } 
         public DbSet<User> Users { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<TimeReport> TimeReports { get; set; }
-        public DbSet<ProjectUser> Projectusers { get; set; }
+        public DbSet<ProjectUser> Project_user { get; set; }
     }
 }
