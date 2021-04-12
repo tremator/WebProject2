@@ -13,6 +13,7 @@ namespace WebProjectll.GraphQL.Types
             Field(x => x.id);
             Field(x => x.Name);
             Field(x => x.Password);
+            Field(x => x.token);
             Field<ListGraphType<ProjectType>>(
                 "projects",
                 resolve: context => {

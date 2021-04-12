@@ -7,7 +7,10 @@ using Microsoft.AspNetCore.Razor;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Text;
-
+using ClosedXML.Excel;
+using System.IO;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 
 namespace WebProjectll.Repositories
 {
@@ -80,7 +83,7 @@ namespace WebProjectll.Repositories
             return results.Where(t => t.ProyectId == id);
         }
 
-        public IActionResult CSV(ResolveFieldContext<object> graphqlContext){
+        public String CSV(ResolveFieldContext<object> graphqlContext){
             var results = from timeReports in _context.TimeReports select timeReports;
             var id = graphqlContext.GetArgument<int>("id");
             results = results.Where((tr => tr.ProyectId == id));
@@ -91,17 +94,115 @@ namespace WebProjectll.Repositories
                 var endDate = DateTime.Parse(endDateString);
                 results = results.Where(tr => tr.date > initialDate && tr.date < endDate);
                 
+            }else{
+                if(graphqlContext.HasArgument("inicialDate")){
+                    var initialDateString = graphqlContext.GetArgument<string>("inicialDate");
+                    var initialDate = DateTime.Parse(initialDateString);
+                    results = results.Where(tr => tr.date > initialDate);
+                }
+                if(graphqlContext.HasArgument("endDate")){
+                    var endDateString = graphqlContext.GetArgument<string>("endDate");
+                    var endDate = DateTime.Parse(endDateString);
+                    results = results.Where(tr => tr.date < endDate);
+                }
             }
-            var builder = new StringBuilder();
-            builder.AppendLine("hours,date");
+            
+            using (var workbook = new XLWorkbook()){
+                var worksheet = workbook.Worksheets.Add("Users");
+                var currentRow = 1;
+                worksheet.Cell(currentRow, 1).Value = "hours";
+                worksheet.Cell(currentRow, 2).Value = "date";
+                foreach (var report in results)
+                {
+                    currentRow++;
+                    worksheet.Cell(currentRow, 1).Value = report.Hours;
+                    worksheet.Cell(currentRow, 2).Value = report.date;
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    
+                    var content = stream.ToArray();
+                    var base64 = Convert.ToBase64String(content);
+
+                    return base64;
+                }
+                
+            }
+
+        }
+        public string PDF(ResolveFieldContext<object> graphqlContext){
+
+            
+            var results = from timeReports in _context.TimeReports select timeReports;
+            var id = graphqlContext.GetArgument<int>("id");
+            results = results.Where((tr => tr.ProyectId == id));
+            if(graphqlContext.HasArgument("inicialDate") && graphqlContext.HasArgument("endDate")){
+                var initialDateString = graphqlContext.GetArgument<string>("inicialDate");
+                var initialDate = DateTime.Parse(initialDateString);
+                var endDateString = graphqlContext.GetArgument<string>("endDate");
+                var endDate = DateTime.Parse(endDateString);
+                results = results.Where(tr => tr.date > initialDate && tr.date < endDate);
+                
+            }else{
+                if(graphqlContext.HasArgument("inicialDate")){
+                    var initialDateString = graphqlContext.GetArgument<string>("inicialDate");
+                    var initialDate = DateTime.Parse(initialDateString);
+                    results = results.Where(tr => tr.date > initialDate);
+                }
+                if(graphqlContext.HasArgument("endDate")){
+                    var endDateString = graphqlContext.GetArgument<string>("endDate");
+                    var endDate = DateTime.Parse(endDateString);
+                    results = results.Where(tr => tr.date < endDate);
+                }
+            }
+
+            Document doc = new Document(PageSize.Letter);
+            PdfWriter writer = PdfWriter.GetInstance(doc,
+                            new MemoryStream());
+
+            doc.AddTitle("Reporte");
+            doc.Open();
+            iTextSharp.text.Font _standardFont = new iTextSharp.text.Font(iTextSharp.text.Font.NORMAL, 8, iTextSharp.text.Font.NORMAL, BaseColor.Black);
+            doc.Add(new Paragraph("Reporte de tiempos"));
+            doc.Add(Chunk.Newline);
+            PdfPTable tblPrueba = new PdfPTable(2);
+            tblPrueba.WidthPercentage = 100;
+
+            PdfPCell clHour = new PdfPCell(new Phrase("Hour", _standardFont));
+            clHour.BorderWidth = 0;
+            clHour.BorderWidthBottom = 0.75f;
+            
+            PdfPCell clDate = new PdfPCell(new Phrase("Date", _standardFont));
+            clDate.BorderWidth = 0;
+            clDate.BorderWidthBottom = 0.75f;
+            
+            tblPrueba.AddCell(clHour);
+            tblPrueba.AddCell(clDate);
+
             foreach (var item in results)
             {
-                builder.AppendLine($"{item.Hours},{item.date}");
-            }
-            var file = File(Encoding.UTF8.GetBytes(builder.ToString()), "text/csv", "projectReport.csv");
-            return file;
-            
-        }
+                PdfPCell hour = new PdfPCell(new Phrase(item.Hours.ToString(), _standardFont));
+                clHour.BorderWidth = 0;
+                clHour.BorderWidthBottom = 0.75f;
+                
+                PdfPCell date = new PdfPCell(new Phrase(item.date.ToString(), _standardFont));
+                clDate.BorderWidth = 0;
+                clDate.BorderWidthBottom = 0.75f;
 
+                tblPrueba.AddCell(hour);
+                tblPrueba.AddCell(date);
+            }
+            doc.Add(tblPrueba);
+ 
+            doc.Close();
+            writer.CreateXmpMetadata();
+            var x = Convert.ToBase64String(writer.XmpMetadata);
+            writer.Close();
+            
+            return x;
+        }
+        
     }
 }

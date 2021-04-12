@@ -112,6 +112,10 @@ namespace WebProjectll.Migrations
                         .HasColumnType("text")
                         .HasColumnName("password");
 
+                    b.Property<string>("token")
+                        .HasColumnType("text")
+                        .HasColumnName("token");
+
                     b.HasKey("id")
                         .HasName("pk_users");
 

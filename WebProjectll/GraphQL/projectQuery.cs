@@ -33,7 +33,7 @@ namespace WebProjectll.GraphQL
                 ),
                 resolve: context => timeReportRepository.filter(context)
             );
-            Field<GraphType>("projectReport",
+            Field<StringGraphType>("projectReport",
                 arguments: new QueryArguments(
                     new QueryArgument<NonNullGraphType<IntGraphType>> { Name = "id" },
                     new QueryArgument<StringGraphType> { Name = "inicialDate" },
@@ -41,6 +41,30 @@ namespace WebProjectll.GraphQL
                 ),
                 resolve: context => projectRepository.CSV(context)
             );
+            Field<StringGraphType>("projectReportPDF",
+                arguments: new QueryArguments(
+                    new QueryArgument<NonNullGraphType<IntGraphType>> { Name = "id" },
+                    new QueryArgument<StringGraphType> { Name = "inicialDate" },
+                    new QueryArgument<StringGraphType> { Name = "endDate" }
+                ),
+                resolve: context => projectRepository.PDF(context)
+            );
+            Field<StringGraphType>("userReport",
+                arguments: new QueryArguments(
+                    new QueryArgument<NonNullGraphType<IntGraphType>> { Name = "id" },
+                    new QueryArgument<StringGraphType> { Name = "inicialDate" },
+                    new QueryArgument<StringGraphType> { Name = "endDate" }
+                ),
+                resolve: context => userRepository.CSV(context)
+            );
+            Field<UserType>("login",
+                arguments: new QueryArguments(
+                    new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "name" },
+                    new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "password" }
+                ),
+                resolve: context => userRepository.login(context.GetArgument<string>("name"),context.GetArgument<string>("password"))
+            );
+
             
         }
     }
