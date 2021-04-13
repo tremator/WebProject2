@@ -11,6 +11,7 @@ using ClosedXML.Excel;
 using System.IO;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
+using Microsoft.AspNetCore.Http;
 
 namespace WebProjectll.Repositories
 {
@@ -21,7 +22,14 @@ namespace WebProjectll.Repositories
             _context = context;
         }
 
-        public IEnumerable<Project> filter(ResolveFieldContext<object> graphqlContext){
+        public IEnumerable<Project> filter(ResolveFieldContext<object> graphqlContext, HttpContext accesor){
+
+
+            var validation = this.validateToken(accesor);
+            if(!validation){
+                return null;
+            }
+
             var results = from projects in _context.Projects select projects;
             if(graphqlContext.HasArgument("name")){
                 var name = graphqlContext.GetArgument<string>("name");
@@ -35,6 +43,10 @@ namespace WebProjectll.Repositories
         }
         
         public IEnumerable<User> getUsers(long id){
+
+            
+
+
             var results = _context.Project_user.Where(u => u.Projectsid == id).ToList();
             List<User> userResults = new List<User>();
             foreach (var projectuser in results)
@@ -46,12 +58,25 @@ namespace WebProjectll.Repositories
             return userResults;
 
         }
-        public Project Create(Project project){
+        public Project Create(Project project, HttpContext accesor){
+
+            var validation = this.validateToken(accesor);
+            if(!validation){
+                return null;
+            }
+
+
             _context.Projects.Add(project);
             _context.SaveChanges();
             return project;
         }
-        public Project addUser(ProjectUser info){
+        public Project addUser(ProjectUser info, HttpContext accesor){
+
+            var validation = this.validateToken(accesor);
+            if(!validation){
+                return null;
+            }
+
             var project = _context.Projects.Find(info.Projectsid);
             var user = _context.Users.Find(info.Usersid);
             project.Users = new List<User>();
@@ -61,7 +86,14 @@ namespace WebProjectll.Repositories
             return project;
             
         }
-        public Project deleteUser(ProjectUser info){
+        public Project deleteUser(ProjectUser info,HttpContext accesor){
+
+            var validation = this.validateToken(accesor);
+            if(!validation){
+                return null;
+            }
+
+
             var project = _context.Projects.Find(info.Projectsid);
             var user = _context.Users.Find(info.Usersid);
             project.Users = getUsers(project.id).ToList();
@@ -70,7 +102,13 @@ namespace WebProjectll.Repositories
             _context.SaveChanges();
             return project;
         }
-        public Project update(long id, Project project){
+        public Project update(long id, Project project, HttpContext accesor){
+
+            var validation = this.validateToken(accesor);
+            if(!validation){
+                return null;
+            }
+
             if(id != project.id){
                 return null;
             }
@@ -79,11 +117,19 @@ namespace WebProjectll.Repositories
             return project;
         }
         public IEnumerable<TimeReport> getReports(long id){
+            
             var results = from timeReports in _context.TimeReports select timeReports;
             return results.Where(t => t.ProyectId == id);
         }
 
-        public String CSV(ResolveFieldContext<object> graphqlContext){
+        public String CSV(ResolveFieldContext<object> graphqlContext, HttpContext accesor){
+
+            var validation = this.validateToken(accesor);
+            if(!validation){
+                return null;
+            }
+
+
             var results = from timeReports in _context.TimeReports select timeReports;
             var id = graphqlContext.GetArgument<int>("id");
             results = results.Where((tr => tr.ProyectId == id));
@@ -132,10 +178,16 @@ namespace WebProjectll.Repositories
             }
 
         }
-        public string PDF(ResolveFieldContext<object> graphqlContext){
+        public string PDF(ResolveFieldContext<object> graphqlContext, HttpContext accesor){
 
-            
+           
+            var validation = this.validateToken(accesor);
+            if(!validation){
+                return null;
+            }
             var results = from timeReports in _context.TimeReports select timeReports;
+            
+
             var id = graphqlContext.GetArgument<int>("id");
             results = results.Where((tr => tr.ProyectId == id));
             if(graphqlContext.HasArgument("inicialDate") && graphqlContext.HasArgument("endDate")){
@@ -202,6 +254,19 @@ namespace WebProjectll.Repositories
             writer.Close();
             
             return x;
+        }
+
+        private bool validateToken(HttpContext accesor){
+
+            var headers = accesor.Request.Headers.ToList();
+            var accesToken = headers.Where(h => h.Key == "Authorization").Single();
+            var users = _context.Users.ToList();
+            User user = users.Find(u => u.token == accesToken.Value.ToString());
+            if(user == null){
+                return false;
+            }else{
+                return true;
+            }
         }
         
     }

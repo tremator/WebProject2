@@ -3,8 +3,7 @@ using WebProjectll.Models;
 using System.Collections.Generic;
 using System.Linq;
 using GraphQL.Types;
-
-
+using Microsoft.AspNetCore.Http;
 
 namespace WebProjectll.Repositories
 {
@@ -17,10 +16,28 @@ namespace WebProjectll.Repositories
         }
 
         
-        public ProjectUser Create(ProjectUser projectUser){
+        public ProjectUser Create(ProjectUser projectUser, HttpContext accesor){
+
+            var validation = this.validateToken(accesor);
+            if(!validation){
+                return null;
+            }
+
             _context.Project_user.Add(projectUser);
             _context.SaveChanges();
             return projectUser;
+        }
+        private bool validateToken(HttpContext accesor){
+
+            var headers = accesor.Request.Headers.ToList();
+            var accesToken = headers.Where(h => h.Key == "Authorization").Single();
+            var users = _context.Users.ToList();
+            User user = users.Find(u => u.token == accesToken.Value.ToString());
+            if(user == null){
+                return false;
+            }else{
+                return true;
+            }
         }
     }
 }

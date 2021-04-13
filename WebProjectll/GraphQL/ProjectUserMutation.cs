@@ -12,11 +12,6 @@ namespace WebProjectll.GraphQL
 {
     public class ProjectUserMutation: ObjectGraphType
     {
-        public ProjectUserMutation(ProjectUserRepository repository){
-            Field<ProjectUserType>("createProjectUser",
-                arguments: new QueryArguments(new QueryArgument<NonNullGraphType<UserInputType>> { Name = "input" }),
-                resolve: context => repository.Create(context.GetArgument<ProjectUser>("input"))
-            );
-        }
+       
     }
 }

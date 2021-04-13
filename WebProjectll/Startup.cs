@@ -20,6 +20,7 @@ using GraphQL.Server.Transports.WebSockets;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using GraphQL.Server.Ui.Playground;
 using System.Text;
+using Microsoft.AspNetCore.Http;
 
 namespace WebProjectll
 {
@@ -48,6 +49,7 @@ namespace WebProjectll
             services.AddScoped<UserRepository>();
             services.AddScoped<TimeReportRepository>();
             services.AddScoped<ProjectUserRepository>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             
 
             services.AddGraphQL(options => { options.ExposeExceptions = true; })

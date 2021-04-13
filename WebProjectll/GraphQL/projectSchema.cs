@@ -8,6 +8,7 @@ namespace WebProjectll.GraphQL
     {
         public ProjectSchema(IDependencyResolver resolver) : base(resolver)
         {
+            
             Query = resolver.Resolve<ProjectQuery>();
             Mutation = resolver.Resolve<ProjectMutation>();
         }
