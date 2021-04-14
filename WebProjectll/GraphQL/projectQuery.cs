@@ -15,6 +15,7 @@ namespace WebProjectll.GraphQL
         public ProjectQuery(ProjectRepository projectRepository, UserRepository userRepository, TimeReportRepository timeReportRepository, IHttpContextAccessor accessor){
              Field<ListGraphType<ProjectType>>("projects",
                 arguments: new QueryArguments(
+                    new QueryArgument<IntGraphType> { Name = "id" },
                     new QueryArgument<StringGraphType> { Name = "description" },
                     new QueryArgument<StringGraphType> { Name = "name" }
                 ),
