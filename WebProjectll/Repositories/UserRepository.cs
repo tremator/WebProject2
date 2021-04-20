@@ -40,8 +40,8 @@ namespace WebProjectll.Repositories
             var results = from users in _context.Users select users;
             
             if(graphqlContext.HasArgument("id")){
-                var id = graphqlContext.GetArgument<string>("id");
-                results = results.Where(p => p.Name.Contains(id));
+                var id = graphqlContext.GetArgument<int>("id");
+                results = results.Where(p => p.id == id);
             }
             return results;
         }

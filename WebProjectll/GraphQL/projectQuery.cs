@@ -36,7 +36,7 @@ namespace WebProjectll.GraphQL
             Field<StringGraphType>("projectReport",
                 arguments: new QueryArguments(
                     new QueryArgument<NonNullGraphType<IntGraphType>> { Name = "id" },
-                    new QueryArgument<StringGraphType> { Name = "inicialDate" },
+                    new QueryArgument<StringGraphType> { Name = "initialDate" },
                     new QueryArgument<StringGraphType> { Name = "endDate" }
                 ),
                 resolve: context => projectRepository.CSV(context,accessor.HttpContext)
@@ -44,7 +44,7 @@ namespace WebProjectll.GraphQL
             Field<StringGraphType>("projectReportPDF",
                 arguments: new QueryArguments(
                     new QueryArgument<NonNullGraphType<IntGraphType>> { Name = "id" },
-                    new QueryArgument<StringGraphType> { Name = "inicialDate" },
+                    new QueryArgument<StringGraphType> { Name = "initialDate" },
                     new QueryArgument<StringGraphType> { Name = "endDate" }
                 ),
                 resolve: context => projectRepository.PDF(context, accessor.HttpContext)
@@ -52,7 +52,7 @@ namespace WebProjectll.GraphQL
             Field<StringGraphType>("userReport",
                 arguments: new QueryArguments(
                     new QueryArgument<NonNullGraphType<IntGraphType>> { Name = "id" },
-                    new QueryArgument<StringGraphType> { Name = "inicialDate" },
+                    new QueryArgument<StringGraphType> { Name = "initialDate" },
                     new QueryArgument<StringGraphType> { Name = "endDate" }
                 ),
                 resolve: context => userRepository.CSV(context, accessor.HttpContext)

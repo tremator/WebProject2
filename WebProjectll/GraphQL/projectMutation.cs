@@ -44,9 +44,13 @@ namespace WebProjectll.GraphQL
                 arguments: new QueryArguments(new QueryArgument<NonNullGraphType<ProjectUserInputType>> { Name = "input"}),
                 resolve: context => project.deleteUser(context.GetArgument<ProjectUser>("input"),accessor.HttpContext)
             );
-             Field<UserType>("deleteUser",
+            Field<UserType>("deleteUser",
                 arguments: new QueryArguments(new QueryArgument<NonNullGraphType<IntGraphType>> { Name = "input" }),
                 resolve: context => repository.deleteUser(context.GetArgument<int>("input"),accessor.HttpContext)
+            );
+            Field<UserType>("deleteProject",
+                arguments: new QueryArguments(new QueryArgument<NonNullGraphType<IntGraphType>> { Name = "input" }),
+                resolve: context => project.deleteProject(context.GetArgument<int>("input"),accessor.HttpContext)
             );
 
         }

@@ -90,6 +90,24 @@ namespace WebProjectll.Repositories
             return project;
             
         }
+        public Project deleteProject(long id, HttpContext accesor){
+            var validation = this.validateToken(accesor);
+            if(!validation){
+                return null;
+            }
+            var project = _context.Projects.Find(id);
+            var relations = from projectUser in _context.Project_user select projectUser;
+            foreach (var relation in relations)
+            {
+               if(relation.Projectsid == id){
+                   _context.Project_user.Remove(relation);
+               } 
+            }
+            _context.Projects.Remove(project);
+            _context.SaveChanges();
+            return project;
+
+        }
         public Project deleteUser(ProjectUser info,HttpContext accesor){
 
             var validation = this.validateToken(accesor);
